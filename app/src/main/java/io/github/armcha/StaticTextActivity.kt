@@ -18,7 +18,7 @@ class StaticTextActivity : AppCompatActivity() {
         setContentView(R.layout.activity_static_text)
 
         val custom = MODE_CUSTOM("\\sAndroid\\b", "\\smobile\\b")
-        val autoLinkText = AutoLinkText(applicationContext)
+        val autoLinkText = AutoLinkText()
         autoLinkText.addAutoLinkMode(
                 MODE_HASHTAG,
                 MODE_EMAIL,
@@ -49,7 +49,7 @@ class StaticTextActivity : AppCompatActivity() {
         autoLinkText.mentionModeColor = ContextCompat.getColor(this, R.color.color6)
         autoLinkText.emailModeColor = ContextCompat.getColor(this, R.color.colorPrimary)
 
-        autoLinkTextView.text = autoLinkText.makeSpannableString(getString(R.string.android_text))
+        autoLinkTextView.text = autoLinkText.makeSpannableString("fdsafdsafdsafads")
         autoLinkTextView.movementMethod = LinkTouchMovementMethod()
 
         autoLinkText.onAutoLinkClick {

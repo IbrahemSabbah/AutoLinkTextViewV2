@@ -36,7 +36,7 @@ class RecyclerViewActivity : AppCompatActivity() {
 
             override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-                val autoLinkText = AutoLinkText(applicationContext)
+                val autoLinkText = AutoLinkText()
                 val context = holder.itemView.context
                 val custom = MODE_CUSTOM("\\sAndroid\\b")
 
@@ -49,7 +49,8 @@ class RecyclerViewActivity : AppCompatActivity() {
                         MODE_MENTION)
 
                 autoLinkText.addUrlTransformations(
-                        "https://google.com" to "Google",
+                        "@user_962786217262" to "Ibrahem Sabbah",
+                        "https://ibraq4.t2.sa/@user_962786217261" to "Mohammad Sabbah",
                         "https://en.wikipedia.org/wiki/Cyberpunk_2077" to "Cyberpunk",
                         "https://en.wikipedia.org/wiki/Fire_OS" to "FIRE",
                         "https://en.wikipedia.org/wiki/Wear_OS" to "Wear OS")
