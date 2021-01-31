@@ -11,6 +11,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
 import java.lang.reflect.Field
+import java.util.regex.Pattern
 
 class AutoLinkText() {
 
@@ -34,7 +35,8 @@ class AutoLinkText() {
     var phoneModeColor = DEFAULT_COLOR
     var emailModeColor = DEFAULT_COLOR
     var urlModeColor = DEFAULT_COLOR
-
+    private var mentionPostFix=""
+    private var mentionPrefFix=""
 
     fun addAutoLinkMode(vararg modes: Mode) {
         this.modes.addAll(modes)
@@ -54,6 +56,12 @@ class AutoLinkText() {
 
     fun attachUrlProcessor(processor: (String) -> String) {
         urlProcessor = processor
+    }
+
+    fun setBuildMentionPattern(prefix:String,postFix:String){
+        mentionPrefFix=prefix
+        mentionPostFix=postFix
+        MENTION_PATTERN_CUSTOM= Pattern.compile("(?:^|\\s|\$|[.])$prefix[\\p{L}0-9_]*$postFix")
     }
 
     fun makeSpannableString(text: CharSequence): SpannableString {
@@ -119,13 +127,14 @@ class AutoLinkText() {
                     val endPoint = matcher.end()
                     when (it) {
                         is MODE_PHONE -> {
-                            if (!MENTION_PATTERN.matcher(text).find()) {
+                            if (text.substring(startPoint - mentionPrefFix.length, startPoint) != mentionPrefFix) {
                                 val digits = group.replace("[^0-9]".toRegex(), "")
                                 if (digits.length in MIN_PHONE_NUMBER_LENGTH..MAX_PHONE_NUMBER_LENGTH) {
                                     val item = AutoLinkItem(startPoint, endPoint, group, group, it)
                                     autoLinkItems.add(item)
                                 }
                             }
+
                         }
                         is MODE_MENTION -> {
                             if (startPoint > 0) {
@@ -144,29 +153,28 @@ class AutoLinkText() {
                             autoLinkItems.add(item)
                         }
                         else -> {
-                            if (!MENTION_PATTERN.matcher(text).find()) {
-                                val isUrl = it is MODE_URL
-                                if (isUrl) {
-                                    if (startPoint > 0) {
-                                        startPoint += 1
-                                    }
-                                    group = group.trimStart()
-                                    if (urlProcessor != null) {
-                                        val transformedUrl = urlProcessor?.invoke(group) ?: group
-                                        if (transformedUrl != group)
-                                            transformations[group] = transformedUrl
-                                    }
+                            val isUrl = it is MODE_URL
+                            if (isUrl) {
+                                if (startPoint > 0) {
+                                    startPoint += 1
                                 }
-                                val matchedText = if (isUrl && transformations.containsKey(group)) {
-                                    transformations[group] ?: group
-                                } else {
-                                    group
+                                group = group.trimStart()
+                                if (urlProcessor != null) {
+                                    val transformedUrl = urlProcessor?.invoke(group) ?: group
+                                    if (transformedUrl != group)
+                                        transformations[group] = transformedUrl
                                 }
-                                val item = AutoLinkItem(startPoint, endPoint, group,
-                                        transformedText = matchedText, mode = it)
-                                autoLinkItems.add(item)
                             }
+                            val matchedText = if (isUrl && transformations.containsKey(group)) {
+                                transformations[group] ?: group
+                            } else {
+                                group
+                            }
+                            val item = AutoLinkItem(startPoint, endPoint, group,
+                                    transformedText = matchedText, mode = it)
+                            autoLinkItems.add(item)
                         }
+
                     }
                 }
             }

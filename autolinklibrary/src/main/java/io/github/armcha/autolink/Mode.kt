@@ -15,7 +15,7 @@ class MODE_CUSTOM(vararg val regex: String) : Mode("Custom")
 fun Mode.toPattern(): List<Pattern> {
     return when (this) {
         is MODE_HASHTAG -> listOf(HASH_TAG_PATTERN)
-        is MODE_MENTION -> listOf(MENTION_PATTERN)
+        is MODE_MENTION -> listOf(MENTION_PATTERN_CUSTOM)
         is MODE_PHONE -> listOf(PHONE_PATTERN)
         is MODE_EMAIL -> listOf(EMAIL_PATTERN)
         is MODE_URL -> listOf(URL_PATTERN)

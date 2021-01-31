@@ -9,4 +9,5 @@ internal val URL_PATTERN = Pattern.compile("(^|[\\s.:;?\\-\\]<\\(])" +
 internal val PHONE_PATTERN: Pattern = Patterns.PHONE
 internal val EMAIL_PATTERN: Pattern = Patterns.EMAIL_ADDRESS
 internal val MENTION_PATTERN: Pattern = Pattern.compile("(?:^|\\s|\$|[.])@user_[\\p{L}0-9_]*:.+")
+ var MENTION_PATTERN_CUSTOM: Pattern = Pattern.compile("")
 internal val HASH_TAG_PATTERN: Pattern = Pattern.compile("(?<![a-zA-Z0-9_])#(?=[0-9_]*[a-zA-Z])[a-zA-Z0-9_]+")

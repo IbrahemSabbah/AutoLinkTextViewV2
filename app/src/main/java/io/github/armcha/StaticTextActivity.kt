@@ -27,13 +27,13 @@ class StaticTextActivity : AppCompatActivity() {
                 custom,
                 MODE_MENTION)
 
-        autoLinkText.addUrlTransformations(
-                "https://en.wikipedia.org/wiki/Wear_OS" to "Wear OS",
-                "https://en.wikipedia.org/wiki/Fire_OS" to "FIRE")
+//        autoLinkText.addUrlTransformations(
+//                "https://en.wikipedia.org/wiki/Wear_OS" to "Wear OS",
+//                "https://en.wikipedia.org/wiki/Fire_OS" to "FIRE")
 
         autoLinkText.attachUrlProcessor {
             when {
-                it.contains("google") -> "Google"
+                it.contains("@user_962786217262:ibraq4.t2.sa") -> "Google"
                 it.contains("github") -> "Github"
                 else -> it
             }
@@ -48,8 +48,8 @@ class StaticTextActivity : AppCompatActivity() {
         autoLinkText.customModeColor = ContextCompat.getColor(this, R.color.color1)
         autoLinkText.mentionModeColor = ContextCompat.getColor(this, R.color.color6)
         autoLinkText.emailModeColor = ContextCompat.getColor(this, R.color.colorPrimary)
-
-        autoLinkTextView.text = autoLinkText.makeSpannableString("fdsafdsafdsafads")
+        autoLinkText.setBuildMentionPattern("@user_",":ibraq4.t2.sa")
+        autoLinkTextView.text = autoLinkText.makeSpannableString("@user_962786217262:ibraq4.t2.sa 962785345342 www.google.com http://google.com i.sabah91@gmail.com")
         autoLinkTextView.movementMethod = LinkTouchMovementMethod()
 
         autoLinkText.onAutoLinkClick {
