@@ -6,7 +6,7 @@ import android.text.method.LinkMovementMethod
 import android.view.MotionEvent
 import android.widget.TextView
 
-internal class LinkTouchMovementMethod : LinkMovementMethod() {
+class LinkTouchMovementMethod : LinkMovementMethod() {
 
     private var pressedSpan: TouchableSpan? = null
 

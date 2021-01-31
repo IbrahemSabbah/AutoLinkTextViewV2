@@ -24,7 +24,7 @@ fun Mode.toPattern(): List<Pattern> {
                 if (it.length > 2) {
                     Pattern.compile(it)
                 } else {
-                    Log.w(AutoLinkTextView.TAG, "Your custom regex is null, returning URL_PATTERN")
+                    Log.w(AutoLinkText.TAG, "Your custom regex is null, returning URL_PATTERN")
                     URL_PATTERN
                 }
             }

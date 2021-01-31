@@ -2,27 +2,20 @@ package io.github.armcha.autolink
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Typeface
-import android.graphics.Typeface.BOLD
-import android.os.Handler
 import android.text.DynamicLayout
 import android.text.SpannableString
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-import android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE
 import android.text.StaticLayout
 import android.text.style.CharacterStyle
-import android.text.style.ClickableSpan
-import android.text.style.StyleSpan
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import java.lang.reflect.Field
 
-class AutoLinkTextView(context: Context, attrs: AttributeSet? = null) : TextView(context, attrs) {
+class AutoLinkText(context: Context) {
 
     companion object {
-        internal val TAG = AutoLinkTextView::class.java.simpleName
+        internal val TAG = AutoLinkText::class.java.simpleName
         private const val MIN_PHONE_NUMBER_LENGTH = 7
         private const val MAX_PHONE_NUMBER_LENGTH = 15
         private const val DEFAULT_COLOR = Color.RED
@@ -42,19 +35,7 @@ class AutoLinkTextView(context: Context, attrs: AttributeSet? = null) : TextView
     var emailModeColor = DEFAULT_COLOR
     var urlModeColor = DEFAULT_COLOR
 
-    init {
-        highlightColor = Color.TRANSPARENT
-        movementMethod = LinkTouchMovementMethod()
-    }
 
-    override fun setText(text: CharSequence, type: BufferType) {
-        if (text.isEmpty() || modes.isNullOrEmpty()) {
-            super.setText(text, type)
-            return
-        }
-        val spannableString = makeSpannableString(text)
-        super.setText(spannableString, type)
-    }
 
     fun addAutoLinkMode(vararg modes: Mode) {
         this.modes.addAll(modes)
@@ -76,7 +57,7 @@ class AutoLinkTextView(context: Context, attrs: AttributeSet? = null) : TextView
         urlProcessor = processor
     }
 
-    private fun makeSpannableString(text: CharSequence): SpannableString {
+     fun makeSpannableString(text: CharSequence): SpannableString {
 
         val autoLinkItems = matchedRanges(text)
         val transformedText = transformLinks(text, autoLinkItems)
@@ -189,19 +170,5 @@ class AutoLinkTextView(context: Context, attrs: AttributeSet? = null) : TextView
         }
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var field: Field? = null
-        val staticField = DynamicLayout::class.java.getDeclaredField("sStaticLayout")
-        staticField.isAccessible = true
-        val layout: StaticLayout? = staticField.get(DynamicLayout::class.java) as? StaticLayout?
-        if (layout != null) {
-            field = StaticLayout::class.java.getDeclaredField("mMaximumVisibleLineCount")
-            field.isAccessible = true
-            field.setInt(layout, maxLines)
-        }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        if (layout != null && field != null) {
-            field.setInt(layout, Integer.MAX_VALUE)
-        }
-    }
+
 }

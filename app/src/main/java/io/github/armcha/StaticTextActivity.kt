@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import io.github.armcha.autolink.*
 import kotlinx.android.synthetic.main.activity_static_text.*
+import kotlinx.android.synthetic.main.recycler_item.view.*
 
 class StaticTextActivity : AppCompatActivity() {
 
@@ -17,7 +18,8 @@ class StaticTextActivity : AppCompatActivity() {
         setContentView(R.layout.activity_static_text)
 
         val custom = MODE_CUSTOM("\\sAndroid\\b", "\\smobile\\b")
-        autoLinkTextView.addAutoLinkMode(
+        val autoLinkText = AutoLinkText(applicationContext)
+        autoLinkText.addAutoLinkMode(
                 MODE_HASHTAG,
                 MODE_EMAIL,
                 MODE_URL,
@@ -25,11 +27,11 @@ class StaticTextActivity : AppCompatActivity() {
                 custom,
                 MODE_MENTION)
 
-        autoLinkTextView.addUrlTransformations(
+        autoLinkText.addUrlTransformations(
                 "https://en.wikipedia.org/wiki/Wear_OS" to "Wear OS",
                 "https://en.wikipedia.org/wiki/Fire_OS" to "FIRE")
 
-        autoLinkTextView.attachUrlProcessor {
+        autoLinkText.attachUrlProcessor {
             when {
                 it.contains("google") -> "Google"
                 it.contains("github") -> "Github"
@@ -37,19 +39,20 @@ class StaticTextActivity : AppCompatActivity() {
             }
         }
 
-        autoLinkTextView.addSpan(MODE_URL, StyleSpan(Typeface.ITALIC), UnderlineSpan())
-        autoLinkTextView.addSpan(MODE_HASHTAG, UnderlineSpan(), TypefaceSpan("monospace"))
-        autoLinkTextView.addSpan(custom, StyleSpan(Typeface.BOLD))
+        autoLinkText.addSpan(MODE_URL, StyleSpan(Typeface.ITALIC), UnderlineSpan())
+        autoLinkText.addSpan(MODE_HASHTAG, UnderlineSpan(), TypefaceSpan("monospace"))
+        autoLinkText.addSpan(custom, StyleSpan(Typeface.BOLD))
 
-        autoLinkTextView.hashTagModeColor = ContextCompat.getColor(this, R.color.color5)
-        autoLinkTextView.phoneModeColor = ContextCompat.getColor(this, R.color.color3)
-        autoLinkTextView.customModeColor = ContextCompat.getColor(this, R.color.color1)
-        autoLinkTextView.mentionModeColor = ContextCompat.getColor(this, R.color.color6)
-        autoLinkTextView.emailModeColor = ContextCompat.getColor(this, R.color.colorPrimary)
+        autoLinkText.hashTagModeColor = ContextCompat.getColor(this, R.color.color5)
+        autoLinkText.phoneModeColor = ContextCompat.getColor(this, R.color.color3)
+        autoLinkText.customModeColor = ContextCompat.getColor(this, R.color.color1)
+        autoLinkText.mentionModeColor = ContextCompat.getColor(this, R.color.color6)
+        autoLinkText.emailModeColor = ContextCompat.getColor(this, R.color.colorPrimary)
 
-        autoLinkTextView.text = getString(R.string.android_text)
+        autoLinkTextView.text = autoLinkText.makeSpannableString(getString(R.string.android_text))
+        autoLinkTextView.movementMethod = LinkTouchMovementMethod()
 
-        autoLinkTextView.onAutoLinkClick {
+        autoLinkText.onAutoLinkClick {
             val message = if (it.originalText == it.transformedText) it.originalText
             else "Original text - ${it.originalText} \n\nTransformed text - ${it.transformedText}"
             val url = if (it.mode is MODE_URL) it.originalText else null

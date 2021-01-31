@@ -14,7 +14,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import io.github.armcha.autolink.*
 import kotlinx.android.synthetic.main.activity_recycler_view.*
+import kotlinx.android.synthetic.main.activity_static_text.view.*
 import kotlinx.android.synthetic.main.recycler_item.view.*
+import kotlinx.android.synthetic.main.recycler_item.view.autoLinkTextView
 
 
 class RecyclerViewActivity : AppCompatActivity() {
@@ -34,11 +36,11 @@ class RecyclerViewActivity : AppCompatActivity() {
 
             override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-                val autoLinkTextView = holder.itemView.autoLinkTextView
+                val autoLinkText = AutoLinkText(applicationContext)
                 val context = holder.itemView.context
                 val custom = MODE_CUSTOM("\\sAndroid\\b")
 
-                autoLinkTextView.addAutoLinkMode(
+                autoLinkText.addAutoLinkMode(
                         MODE_HASHTAG,
                         MODE_URL,
                         MODE_PHONE,
@@ -46,21 +48,21 @@ class RecyclerViewActivity : AppCompatActivity() {
                         custom,
                         MODE_MENTION)
 
-                autoLinkTextView.addUrlTransformations(
+                autoLinkText.addUrlTransformations(
                         "https://google.com" to "Google",
                         "https://en.wikipedia.org/wiki/Cyberpunk_2077" to "Cyberpunk",
                         "https://en.wikipedia.org/wiki/Fire_OS" to "FIRE",
                         "https://en.wikipedia.org/wiki/Wear_OS" to "Wear OS")
 
-                autoLinkTextView.addSpan(MODE_URL, StyleSpan(Typeface.BOLD_ITALIC), UnderlineSpan())
-                autoLinkTextView.addSpan(custom, StyleSpan(Typeface.BOLD))
-                autoLinkTextView.addSpan(MODE_HASHTAG, BackgroundColorSpan(Color.GRAY), UnderlineSpan(), ForegroundColorSpan(Color.WHITE))
+                autoLinkText.addSpan(MODE_URL, StyleSpan(Typeface.BOLD_ITALIC), UnderlineSpan())
+                autoLinkText.addSpan(custom, StyleSpan(Typeface.BOLD))
+                autoLinkText.addSpan(MODE_HASHTAG, BackgroundColorSpan(Color.GRAY), UnderlineSpan(), ForegroundColorSpan(Color.WHITE))
 
-                autoLinkTextView.hashTagModeColor = ContextCompat.getColor(context, R.color.color2)
-                autoLinkTextView.customModeColor = ContextCompat.getColor(context, R.color.color1)
-                autoLinkTextView.mentionModeColor = ContextCompat.getColor(context, R.color.color3)
-                autoLinkTextView.emailModeColor = ContextCompat.getColor(context, R.color.colorPrimary)
-                autoLinkTextView.phoneModeColor = ContextCompat.getColor(context, R.color.colorAccent)
+                autoLinkText.hashTagModeColor = ContextCompat.getColor(context, R.color.color2)
+                autoLinkText.customModeColor = ContextCompat.getColor(context, R.color.color1)
+                autoLinkText.mentionModeColor = ContextCompat.getColor(context, R.color.color3)
+                autoLinkText.emailModeColor = ContextCompat.getColor(context, R.color.colorPrimary)
+                autoLinkText.phoneModeColor = ContextCompat.getColor(context, R.color.colorAccent)
 
                 val text = when {
                     position % 3 == 1 -> R.string.android_text_short
@@ -68,9 +70,10 @@ class RecyclerViewActivity : AppCompatActivity() {
                     else -> R.string.text_third
                 }
 
-                autoLinkTextView.text = getString(text)
+                holder.itemView.autoLinkTextView.text = autoLinkText.makeSpannableString(getString(text))
+                holder.itemView.autoLinkTextView.movementMethod = LinkTouchMovementMethod()
 
-                autoLinkTextView.onAutoLinkClick {
+                autoLinkText.onAutoLinkClick {
                     val message = if (it.originalText == it.transformedText) it.originalText
                     else "Original text - ${it.originalText} \n\nTransformed text - ${it.transformedText}"
                     val url = if (it.mode is MODE_URL) it.originalText else null
