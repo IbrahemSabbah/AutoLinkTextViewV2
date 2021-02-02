@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import io.github.armcha.autolink.*
 import kotlinx.android.synthetic.main.activity_static_text.*
-import kotlinx.android.synthetic.main.recycler_item.view.*
+import kotlinx.coroutines.*
 
 class StaticTextActivity : AppCompatActivity() {
 
@@ -31,11 +31,14 @@ class StaticTextActivity : AppCompatActivity() {
 //                "https://en.wikipedia.org/wiki/Wear_OS" to "Wear OS",
 //                "https://en.wikipedia.org/wiki/Fire_OS" to "FIRE")
 
-        autoLinkText.attachUrlProcessor {
+
+        autoLinkText.attachMentionProcessor {item->
             when {
-                it.contains("@user_962786217262:ibraq4.t2.sa") -> "Google"
-                it.contains("github") -> "Github"
-                else -> it
+                item.contains("@962786217262") -> "Google"
+                item.contains("@user_962786217261:ibraq4.t2.sa") -> "Facebook"
+                item.contains("@user_962786217260:ibraq4.t2.sa") -> "Amazon"
+                item.contains("github") -> "Github"
+                else ->""
             }
         }
 
@@ -48,9 +51,13 @@ class StaticTextActivity : AppCompatActivity() {
         autoLinkText.customModeColor = ContextCompat.getColor(this, R.color.color1)
         autoLinkText.mentionModeColor = ContextCompat.getColor(this, R.color.color6)
         autoLinkText.emailModeColor = ContextCompat.getColor(this, R.color.colorPrimary)
-        autoLinkText.setBuildMentionPattern("@user_",":ibraq4.t2.sa")
-        autoLinkTextView.text = autoLinkText.makeSpannableString("@user_962786217262:ibraq4.t2.sa 962785345342 www.google.com http://google.com i.sabah91@gmail.com")
+        autoLinkText.setBuildMentionPattern("@", "")
+        autoLinkTextView.text = autoLinkText.makeSpannableString("@962786217262")
+
         autoLinkTextView.movementMethod = LinkTouchMovementMethod()
+
+
+
 
         autoLinkText.onAutoLinkClick {
             val message = if (it.originalText == it.transformedText) it.originalText
@@ -59,4 +66,15 @@ class StaticTextActivity : AppCompatActivity() {
             showDialog(it.mode.modeName, message, url)
         }
     }
+
+    fun getName(item: String): String {
+        return when {
+            item.contains("@user_962786217262:ibraq4.t2.sa") -> "Google"
+            item.contains("@user_962786217261:ibraq4.t2.sa") -> "Facebook"
+            item.contains("@user_962786217260:ibraq4.t2.sa") -> "Amazon"
+            item.contains("github") -> "Github"
+            else -> item
+        }
+    }
+
 }

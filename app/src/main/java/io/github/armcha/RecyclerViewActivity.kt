@@ -71,7 +71,7 @@ class RecyclerViewActivity : AppCompatActivity() {
                     else -> R.string.text_third
                 }
 
-                holder.itemView.autoLinkTextView.text = autoLinkText.makeSpannableString(getString(text))
+//                holder.itemView.autoLinkTextView.text = autoLinkText.makeSpannableString(getString(text))
                 holder.itemView.autoLinkTextView.movementMethod = LinkTouchMovementMethod()
 
                 autoLinkText.onAutoLinkClick {
